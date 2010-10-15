@@ -1,0 +1,1 @@
+<? if(!isset($_COOKIE['userdata']['user_id'])){ header('Location: login.php');} ?>

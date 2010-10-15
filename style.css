@@ -1,0 +1,45 @@
+body {
+ padding:0px;
+ margin:0px;
+ background-color:#FFFFFF;
+ }
+ a { text-decoration:none }
+ a:hover { text-decoration:underline overline}
+ tr{font-size:12px;}
+tr:hover {cursor:crosshair; font-size:12px;}
+
+.menu { text-align:center;}
+
+table { border-collapse:collapse}
+
+@media print {
+  .noprint { display: none; }
+}
+
+
+/*
+
+
+
+
+body{margin:0px;
+padding:0px;
+font-family:Arial; 
+font:Arial;
+}
+a:hover{cursor:pointer;}
+.NEG{background-color:#FF9966}
+.POS{ background-color:#66FFCC}
+.EVEN{ background-color:#FFFFFF}
+#lineitem{ background-color:#CCCCCC}
+#lineitem:hover{ background-color:#FF0000}
+//-->
+
+
+
+
+
+
+
+
+*/
