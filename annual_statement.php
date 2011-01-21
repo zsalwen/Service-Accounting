@@ -1,6 +1,17 @@
 <?php
 /*include 'common/security.php';*/
 include 'functions.php';
+function mkyear($keep){
+$opt = "<option selected value='$keep'>$keep</option>";
+$curYear=date('Y');
+//start range in 2008.
+$year=2008;
+while ($year <= $curYear){
+$opt .= "<option value='$year'>$year</option>";
+$year++;
+}
+return $opt;
+}
 echo dbConnect();
 mysql_select_db('intranet');
 $year = $_GET[year]; 
@@ -223,11 +234,7 @@ $date = $date[1].'/'.$date[2];
 	</tr>
 	<tr>
 		<td>Statement Date</td><td><select name="year">
-			<option><?=$_GET[year]?></option>
-				<option>2007</option>
-				<option>2008</option>
-				<option>2009</option>
-				<option>2010</option>
+			<?=mkyear($_GET[year])?>
 			</select></td>
 	</tr>
 		<td colspan="2" align="center"><input type="submit" value="Display These Files" /></td>
