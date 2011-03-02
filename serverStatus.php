@@ -21,7 +21,7 @@ $_SESSION[notfiled]++;
 
 }
 function slot($slot,$id){
-$q="SELECT * FROM ps_packets where server_id".$slot." = '$id' ORDER BY packet_id";
+$q="SELECT * FROM ps_packets, ps_pay where server_id".$slot." = '$id' AND ps_packets.packet_id=ps_pay.packetID AND ps_pay.product='OTD' ORDER BY packet_id";
 $r=@mysql_query($q);
 while ($d=mysql_fetch_array($r, MYSQL_ASSOC)){?>
     <tr bgcolor="#<?=paidStatus($d["contractor_check".$slot])?>">

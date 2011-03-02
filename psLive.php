@@ -10,7 +10,6 @@ $_SESSION[Filing]=0;
 $_SESSION[Paid1]=0;
 $_SESSION[Paid2]=0;
 $_SESSION[Paid3]=0;
-$_SESSION[serviceReduction]=0;
 ?>
 <style>
 td {white-space:pre}
@@ -30,7 +29,7 @@ table { border-collapse:collapse}
 
 function csvRow($packet){
 $count=0;
-$q="SELECT * FROM ps_packets where packet_id = '$packet'";
+$q="SELECT * FROM ps_packets, ps_pay where packet_id = '$packet' AND ps_packets.packet_id=ps_pay.packetID AND ps_pay.product='OTD'";
 $r=@mysql_query($q) or die("Query 1<br>".mysql_error());
 $d=mysql_fetch_array($r,MYSQL_ASSOC);
 $client_file = $d['client_file'];
@@ -98,17 +97,16 @@ $_SESSION[Filing] = $_SESSION[Filing] + 25;
 }
 $totalService = $ins*75 + $outs*125;
 $_SESSION[Service] = $_SESSION[Service] + $totalService;
-$packetTotal = $totalService + $mailFee + $filingCost - $d[serviceReduction];
+$packetTotal = $totalService + $mailFee + $filingCost;
 
 
 $_SESSION[Paid1] = $_SESSION[Paid1] + $d[client_paid];
 $_SESSION[Paid2] = $_SESSION[Paid2] + $d[client_paida];
 $_SESSION[Paid3] = $_SESSION[Paid3] + $d[client_paidb];
-$_SESSION[serviceReduction] = $_SESSION[serviceReduction] + $d[serviceReduction];
 
-$clear = $packetTotal - $d[client_paid] - $d[client_paida] - $d[client_paidb] + $d[serviceReduction]; 
+$clear = $packetTotal - $d[client_paid] - $d[client_paida] - $d[client_paidb]; 
 
-$csvData = "<tr><td><a href='http://mdwestserve.com/AC/ps_pay.php?id=$packet' target='_Blank'>".$packet."</a></td><td>".$d['client_file']."</td><td>".$d['date_received']."</td><td>".$totalService."</td><td>".$mailFee."</td><td>".$filingCost."</td><td>".$packetTotal."</td><td>".$d['service_status']."</td><td>".$d['client_paid']."</td><td>".$d['client_check']."</td><td>".$d['client_paida']."</td><td>".$d['client_checka']."</td><td>".$d['client_paidb']."</td><td>".$d['client_checkb']."</td><td>".$clear."</td><td>$d[serviceReduction]</td></tr>";
+$csvData = "<tr><td><a href='http://mdwestserve.com/AC/ps_pay.php?id=$packet' target='_Blank'>".$packet."</a></td><td>".$d['client_file']."</td><td>".$d['date_received']."</td><td>".$totalService."</td><td>".$mailFee."</td><td>".$filingCost."</td><td>".$packetTotal."</td><td>".$d['service_status']."</td><td>".$d['client_paid']."</td><td>".$d['client_check']."</td><td>".$d['client_paida']."</td><td>".$d['client_checka']."</td><td>".$d['client_paidb']."</td><td>".$d['client_checkb']."</td><td>".$clear."</td>\</tr>";
 return $csvData;
 }
 //------------------------------------------------------------------------------------------------------------------
@@ -131,7 +129,7 @@ $step2 = mysql_select_db ('core');
 // y = 2008-01
 if ($_GET[x] && $_GET[y]){ 
 // header
-$data = "<table border='1'><tr><td>Packet Number</td><td>File Number</td><td>Date Received</td><td>Service</td><td>Mailing</td><td>Filing</td><td>Packet Total</td><td>Service Result</td><td>Check 1</td><td>Number 1</td><td> Check 2</td><td> Number 2</td><td> Check 3</td><td> Number 3</td><td> Clear </td><td>Reduced</td></tr>";
+$data = "<table border='1'><tr><td>Packet Number</td><td>File Number</td><td>Date Received</td><td>Service</td><td>Mailing</td><td>Filing</td><td>Packet Total</td><td>Service Result</td><td>Check 1</td><td>Number 1</td><td> Check 2</td><td> Number 2</td><td> Check 3</td><td> Number 3</td><td> Clear </td>\</tr>";
 // items
 $q="select packet_id, service_status from ps_packets where
 									 date_received >= '$_GET[y]-01' and 
@@ -159,12 +157,12 @@ $data .= csvRow($d['packet_id']);
 
 
 // totals
-$totalBill = $_SESSION[Service] + $_SESSION[Mail] + $_SESSION[Filing] - $_SESSION[serviceReduction];
+$totalBill = $_SESSION[Service] + $_SESSION[Mail] + $_SESSION[Filing];
 $data .= "<tr><td> </td><td> </td><td> </td><td>".$_SESSION[Service]."</td><td>".$_SESSION[Mail]."</td><td>".$_SESSION[Filing]."</td><td>".$totalBill."</td><td> </td><td>$_SESSION[Paid1]</td><td> </td><td> $_SESSION[Paid2]</td><td> </td><td> $_SESSION[Paid3]</td><td> </td><td>  </td><td> </td></tr>";
 
-$totalPaid = $_SESSION[Paid1] + $_SESSION[Paid2] + $_SESSION[Paid3] + $_SESSION[serviceReduction];
+$totalPaid = $_SESSION[Paid1] + $_SESSION[Paid2] + $_SESSION[Paid3];
 $due = $totalBill - $totalPaid;
-$data .= "<tr><td>Total Due</td><td>$due </td><td> </td><td>Total Reductions</td><td> $_SESSION[serviceReduction]</td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td></td><td></td><td></td><td></td><td></td></tr></table> \n";
+$data .= "<tr><td>Total Due</td><td>$due </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td></td><td></td><td></td><td></td><td></td></tr></table> \n";
 
 
 echo $data;

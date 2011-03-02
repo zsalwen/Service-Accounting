@@ -137,7 +137,7 @@ function hundreds($number) {
 
 
 function packetCost($id){
-	$d=mysql_fetch_array(@mysql_query("SELECT * from ps_packets where packet_id = '$id' AND process_status <> 'CANCELLED'"), MYSQL_ASSOC);
+	$d=mysql_fetch_array(@mysql_query("SELECT * from ps_packets, ps_pay where packet_id = '$id' AND process_status <> 'CANCELLED' AND ps_packets.packet_id=ps_pay.packetID AND ps_pay.product='OTD'"), MYSQL_ASSOC);
 		$total = 0;
 		if ($d[name1]){ $total = $total + $d[contractor_rateb]; }
 		if ($d[name2]){ $total = $total + $d[contractor_rateb]; }
@@ -148,12 +148,12 @@ function packetCost($id){
 ////////// end functions
 if ($_POST[check]){
 
-$q="SELECT * FROM ps_packets WHERE contractor_rateb <> '' AND process_status = 'INVOICED' AND server_idb = '$id'";
+$q="SELECT * FROM ps_packets, ps_pay WHERE ps_pay.contractor_rateb <> '' AND process_status = 'INVOICED' AND server_idb = '$id' AND ps_packets.packet_id=ps_pay.packetID AND ps_pay.product='OTD'";
 $r=@mysql_query($q);
 while ($d=mysql_fetch_array($r, MYSQL_ASSOC)){
 	$svc =packetCost($d[packet_id]); 
 	$pay = $svc - $d[print_cost];
-	@mysql_query("update ps_packets set contractor_paidb = '$pay', contractor_checkb = '$_POST[check]' where packet_id = '$d[packet_id]'") or die(mysql_error());
+	@mysql_query("update ps_pay set contractor_paidb = '$pay', contractor_checkb = '$_POST[check]' where packetID = '$d[packet_id]' AND product='OTD'") or die(mysql_error());
 	$result .= "Paying packet $d[packet_id] with check number <strong>$_POST[check]</strong>. Rate is $d[contractor_rate]. Service is $svc. Printing is $d[print_cost]. Amount Paid is <strong>$pay</strong>, status is now '<strong>AWAITING PAYMENT</strong>' from client.<br>";
 }
 @mysql_query("insert into ac_register (trans, accountID, codeID, userID, status, detail, amount, entered, checkNumber) values ('WITHDRAW', '5', '301', '$user', 'ENTERED', '$_POST[regpayto]', '$pay', NOW(), '$_POST[check]')") or die(mysql_error());
@@ -173,7 +173,7 @@ $r=@mysql_query($q) or die(mysql_error());
 $d=mysql_fetch_array($r, MYSQL_ASSOC);
 if ($d[company]){$payTo = $d[company];}else{$payTo = $d[name];}
 
-$q="SELECT * FROM ps_packets where server_idb = '$id' AND process_status = 'INVOICED' and contractor_rateb <> ''"; // 
+$q="SELECT * FROM ps_packets, ps_pay where server_idb = '$id' AND process_status = 'INVOICED' and ps_pay.contractor_rateb <> '' AND ps_packets.packet_id=ps_pay.packetID AND ps_pay.product='OTD'"; // 
 $r=@mysql_query($q);
 
 

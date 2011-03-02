@@ -54,9 +54,9 @@ echo "<option value=''>SHOW ALL</option>";
 <table border="1" width="100%">
 <?
 if ($_GET[attid]){
-	$q="select packet_id, date_received, service_status, filing_status, bill410, bill420, bill430, bill440, code410, code420, code430, code440, code410a, code420a, code430a, code440a, code410b, code420b, code430b, code440b, attorneys_id, DATE_FORMAT(date_received,'%M %D, %Y at %l:%i%p') as date_received_f from ps_packets where bill410 <> '' AND date_received < '$pastDue' AND attorneys_id = '$_GET[attid]' order by packet_id";
+	$q="select ps_packets.packet_id, ps_packets.date_received, ps_packets.service_status, ps_packets.filing_status, ps_pay.bill410, ps_pay.bill420, ps_pay.bill430, ps_pay.bill440, ps_pay.code410, ps_pay.code420, ps_pay.code430, ps_pay.code440, ps_pay.code410a, ps_pay.code420a, ps_pay.code430a, ps_pay.code440a, ps_pay.code410b, ps_pay.code420b, ps_pay.code430b, ps_pay.code440b, ps_packets.attorneys_id, DATE_FORMAT(ps_packets.date_received,'%M %D, %Y at %l:%i%p') as date_received_f from ps_packets, ps_pay where ps_pay.bill410 <> '' AND ps_packets.date_received < '$pastDue' AND ps_packets.attorneys_id = '$_GET[attid]' AND ps_packets.packet_id=ps_pay.packetID AND ps_pay.product='OTD' order by packet_id";
 }else{
-	$q="select packet_id, date_received, service_status, filing_status, bill410, bill420, bill430, bill440, code410, code420, code430, code440, code410a, code420a, code430a, code440a, code410b, code420b, code430b, code440b, attorneys_id, DATE_FORMAT(date_received,'%M %D, %Y at %l:%i%p') as date_received_f from ps_packets where bill410 <> '' AND date_received < '$pastDue' order by packet_id";
+	$q="select ps_packets.packet_id, ps_packets.date_received, ps_packets.service_status, ps_packets.filing_status, ps_pay.bill410, ps_pay.bill420, ps_pay.bill430, ps_pay.bill440, ps_pay.code410, ps_pay.code420, ps_pay.code430, ps_pay.code440, ps_pay.code410a, ps_pay.code420a, ps_pay.code430a, ps_pay.code440a, ps_pay.code410b, ps_pay.code420b, ps_pay.code430b, ps_pay.code440b, ps_packets.attorneys_id, DATE_FORMAT(ps_packets.date_received,'%M %D, %Y at %l:%i%p') as date_received_f from ps_packets, ps_pay where ps_pay.bill410 <> '' AND ps_packets.date_received < '$pastDue' AND ps_packets.packet_id=ps_pay.packetID AND ps_pay.product='OTD' order by packet_id";
 }
 $r=@mysql_query($q);
 $i=0;

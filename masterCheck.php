@@ -139,7 +139,7 @@ function hundreds($number) {
 }
 
 function packetCost($id,$str){
-	$d=mysql_fetch_array(@mysql_query("SELECT * from ps_packets where packet_id = '$id'"), MYSQL_ASSOC);
+	$d=mysql_fetch_array(@mysql_query("SELECT * from ps_packets, ps_pay where packet_id = '$id' AND ps_packets.packet_id=ps_pay.packetID AND ps_pay.product='OTD'"), MYSQL_ASSOC);
 		$total = 0;
 		if ($d[name1]){ 
 		if ($str == 'a'){
@@ -250,7 +250,7 @@ if ($d[company]){$payTo = $d[company];}else{$payTo = $d[name];}
 
 
 
-$q="SELECT * FROM ps_packets where server_id = '$id' and contractor_check = ''  ORDER BY packet_id";
+$q="SELECT * FROM ps_packets, ps_pay where server_id = '$id' and ps_pay.contractor_check = '' AND ps_packets.packet_id=ps_pay.packetID AND ps_pay.product='OTD' ORDER BY packet_id";
 $r=@mysql_query($q);
 $details = "<table width='100%' cellspacing='0'><tr><td>ID</td><td>Received</td><td>Service</td><td>Printing</td><td style='padding-left:20px'>Balance</td></tr>";
 $svc=0;
@@ -282,7 +282,7 @@ if ($d[contractor_rate] == ''){
 
 
 
-$q="SELECT * FROM ps_packets where server_ida = '$id' and contractor_checka = ''  ORDER BY packet_id";
+$q="SELECT * FROM ps_packets, ps_pay where server_ida = '$id' and ps_pay.contractor_checka = '' AND ps_packets.packet_id=ps_pay.packetID AND ps_pay.product='OTD' ORDER BY packet_id";
 $r=@mysql_query($q);
 while ($d=mysql_fetch_array($r, MYSQL_ASSOC)){
 $svc = $svc + packetCost($d[packet_id],'a');
@@ -305,7 +305,7 @@ if ($d[contractor_rate] == ''){
 }
 
 
-$q="SELECT * FROM ps_packets where server_idb = '$id' and contractor_checkb = ''  ORDER BY packet_id";
+$q="SELECT * FROM ps_packets, ps_pay where server_idb = '$id' and ps_pay.contractor_checkb = '' AND ps_packets.packet_id=ps_pay.packetID AND ps_pay.product='OTD' ORDER BY packet_id";
 $r=@mysql_query($q);
 while ($d=mysql_fetch_array($r, MYSQL_ASSOC)){
 $svc = $svc + packetCost($d[packet_id],'b');
@@ -331,7 +331,7 @@ if ($d[contractor_rate] == ''){
 
 
 
-$q="SELECT * FROM ps_packets where server_idc = '$id' and contractor_checkc = ''  ORDER BY packet_id";
+$q="SELECT * FROM ps_packets, ps_pay where server_idc = '$id' and ps_pay.contractor_checkc = '' AND ps_packets.packet_id=ps_pay.packetID AND ps_pay.product='OTD' ORDER BY packet_id";
 $r=@mysql_query($q);
 while ($d=mysql_fetch_array($r, MYSQL_ASSOC)){
 $svc = $svc + packetCost($d[packet_id],'c');

@@ -137,7 +137,7 @@ function hundreds($number) {
 
 
 function packetCost($id){
-	$d=mysql_fetch_array(@mysql_query("SELECT * from ps_packets where packet_id = '$id' AND process_status <> 'CANCELLED'"), MYSQL_ASSOC);
+	$d=mysql_fetch_array(@mysql_query("SELECT * from ps_packets, ps_pay where packet_id = '$id' AND process_status <> 'CANCELLED' AND ps_packets.packet_id=ps_pay.packetID AND ps_pay.product='OTD'"), MYSQL_ASSOC);
 		$total = 0;
 		if ($d[name1]){ $total = $total + $d[contractor_ratea]; }
 		if ($d[name2]){ $total = $total + $d[contractor_ratea]; }
@@ -148,12 +148,12 @@ function packetCost($id){
 ////////// end functions
 if ($_POST[check]){
 
-$q="SELECT * FROM ps_packets WHERE contractor_ratea <> '' AND (process_status = 'INVOICED' OR (process_status = 'AWAITING PAYMENT' AND contractor_paida='')) AND server_ida = '$id'";
+$q="SELECT * FROM ps_packets, ps_pay WHERE ps_pay.contractor_ratea <> '' AND (process_status = 'INVOICED' OR (process_status = 'AWAITING PAYMENT' AND ps_pay.contractor_paida='')) AND server_ida = '$id' AND ps_packets.packet_id=ps_pay.packetID AND ps_pay.product='OTD'";
 $r=@mysql_query($q);
 while ($d=mysql_fetch_array($r, MYSQL_ASSOC)){
 	$svc =packetCost($d[packet_id]); 
 	$pay = $svc;
-	$q="update ps_packets set contractor_paida = '$pay', contractor_checka = '$_POST[check]' where packet_id = '$d[packet_id]'";
+	$q="update ps_pay set contractor_paida = '$pay', contractor_checka = '$_POST[check]' where packetID = '$d[packet_id]' AND product='OTD'";
 	@mysql_query($q) or die(mysql_error());
 	$result .= "Paying packet $d[packet_id] with check number <strong>$_POST[check]</strong>. Rate is $d[contractor_ratea]. Service is $svc.  Amount Paid is <strong>$pay</strong>.<hr>$q";
 }
@@ -174,7 +174,7 @@ $r=@mysql_query($q) or die(mysql_error());
 $d=mysql_fetch_array($r, MYSQL_ASSOC);
 if ($d[company]){$payTo = $d[company];}else{$payTo = $d[name];}
 
-$q="SELECT * FROM ps_packets where server_ida = '$id' AND process_status = 'INVOICED' and contractor_ratea <> ''"; // 
+$q="SELECT * FROM ps_packets, ps_pay where server_ida = '$id' AND process_status = 'INVOICED' and ps_pay.contractor_ratea <> '' AND ps_packets.packet_id=ps_pay.packetID AND ps_pay.product='OTD'"; // 
 $r=@mysql_query($q);
 
 

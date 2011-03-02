@@ -138,7 +138,7 @@ function hundreds($number) {
 
 
 function packetCost($id){
-	$d=mysql_fetch_array(@mysql_query("SELECT * from ps_packets where packet_id = '$id' AND process_status <> 'CANCELLED'"), MYSQL_ASSOC);
+	$d=mysql_fetch_array(@mysql_query("SELECT * from ps_packets, ps_pay where packet_id = '$id' AND process_status <> 'CANCELLED' AND ps_packets.packet_id=ps_pay.packetID AND ps_pay.product='OTD'"), MYSQL_ASSOC);
 		$total = 0;
 		if ($d[name1]){ $total = $total + $d[contractor_ratea]; }
 		if ($d[name2]){ $total = $total + $d[contractor_ratea]; }
@@ -149,13 +149,13 @@ function packetCost($id){
 ////////// end functions
 if ($_POST[check]){
 $reg='';
-$q="SELECT * FROM ps_packets WHERE process_status = 'ASSIGNED' AND server_ida = '$id'";
+$q="SELECT * FROM ps_packets, ps_pay WHERE process_status = 'ASSIGNED' AND server_ida = '$id' AND ps_packets.packet_id=ps_pay.packetID AND ps_pay.product='OTD'";
 $r=@mysql_query($q);
 while ($d=mysql_fetch_array($r, MYSQL_ASSOC)){
 	$svc =packetCost($d[packet_id]); 
 	$pay = $svc; 
 	$reg = $reg + $pay; 
-	@mysql_query("update ps_packets set contractor_paida = '$pay', process_status = 'ASSIGNED', contractor_checka = '$_POST[check]' where packet_id = '$d[packet_id]'") or die(mysql_error());
+	@mysql_query("update ps_packets, ps_pay set ps_pay.contractor_paida = '$pay', process_status = 'ASSIGNED', ps_pay.contractor_checka = '$_POST[check]' where packet_id = '$d[packet_id]' AND ps_packets.packet_id=ps_pay.packetID AND ps_pay.product='OTD'") or die(mysql_error());
 	$result .= "Paying packet $d[packet_id] with check number <strong>$_POST[check]</strong>. Rate is $d[contractor_ratea]. Service is $svc.  Amount Paid is <strong>$pay</strong>, status is now '<strong>ASSIGNED</strong>'.<br>";
 }
 @mysql_query("insert into ac_register (trans, accountID, codeID, userID, status, detail, amount, entered, checkNumber) values ('WITHDRAW', '5', '301', '$user', 'ENTERED', '$_POST[regpayto]', '$reg', NOW(), '$_POST[check]')") or die(mysql_error());

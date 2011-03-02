@@ -50,58 +50,57 @@ if ($_POST[submit]){
 	@mysql_query("update psActivity set clientPayment = '$count' where today='".date('Y-m-d')."'") or die(mysql_error());
 	echo "Saved! - $count for the day...";
 
-	$q1 = "UPDATE ps_packets SET 
-									code410='$_POST[code410]',
-									code410a='$_POST[code410a]',
-									code410b='$_POST[code410b]',
-									code420='$_POST[code420]',
-									code420a='$_POST[code420a]',
-									code420b='$_POST[code420b]',
-									code430='$_POST[code430]',
-									code430a='$_POST[code430a]',
-									code430b='$_POST[code430b]',
-									code440='$_POST[code440]',
-									code440a='$_POST[code440a]',
-									code440b='$_POST[code440b]',
-									contractor_rate='$_POST[contractor_rate]', 
-									contractor_paid='$_POST[contractor_paid]',
-									contractor_check='$_POST[contractor_check]', 
-									contractor_ratea='$_POST[contractor_ratea]', 
-									contractor_paida='$_POST[contractor_paida]',
-									contractor_checka='$_POST[contractor_checka]', 
-									contractor_rateb='$_POST[contractor_rateb]', 
-									contractor_paidb='$_POST[contractor_paidb]',
-									contractor_checkb='$_POST[contractor_checkb]', 
-									contractor_ratec='$_POST[contractor_ratec]', 
-									contractor_paidc='$_POST[contractor_paidc]',
-									contractor_checkc='$_POST[contractor_checkc]', 
-									contractor_rated='$_POST[contractor_rated]', 
-									contractor_paidd='$_POST[contractor_paidd]',
-									contractor_checkd='$_POST[contractor_checkd]', 
-									contractor_ratee='$_POST[contractor_ratee]', 
-									contractor_paide='$_POST[contractor_paide]',
-									contractor_checke='$_POST[contractor_checke]', 
-									client_rate='$_POST[client_rate]', 
-									client_ratea='$_POST[client_ratea]', 
-									client_rateb='$_POST[client_rateb]', 
-									client_paid='$_POST[client_paid]',
-									client_paida='$_POST[client_paida]',
-									client_paidb='$_POST[client_paidb]',
-									client_check='$_POST[client_check]',
-									client_checka='$_POST[client_checka]',
-									client_checkb='$_POST[client_checkb]',
-									client_ratec='$_POST[client_ratec]', 
-									client_rated='$_POST[client_rated]', 
-									client_ratee='$_POST[client_ratee]', 
-									client_paidc='$_POST[client_paidc]',
-									client_paidd='$_POST[client_paidd]',
-									client_paide='$_POST[client_paide]',
-									client_checkc='$_POST[client_checkc]',
-									client_checkd='$_POST[client_checkd]',
-									client_checke='$_POST[client_checke]',
-									serviceReduction='$_POST[serviceReduction]',
-									accountingNotes='".addslashes($_POST[accountingNotes])."'
-										WHERE packet_id='$_POST[id]'";		
+	$q1 = "UPDATE ps_packets, ps_pay SET 
+									ps_pay.code410='$_POST[code410]',
+									ps_pay.code410a='$_POST[code410a]',
+									ps_pay.code410b='$_POST[code410b]',
+									ps_pay.code420='$_POST[code420]',
+									ps_pay.code420a='$_POST[code420a]',
+									ps_pay.code420b='$_POST[code420b]',
+									ps_pay.code430='$_POST[code430]',
+									ps_pay.code430a='$_POST[code430a]',
+									ps_pay.code430b='$_POST[code430b]',
+									ps_pay.code440='$_POST[code440]',
+									ps_pay.code440a='$_POST[code440a]',
+									ps_pay.code440b='$_POST[code440b]',
+									ps_pay.contractor_rate='$_POST[contractor_rate]', 
+									ps_pay.contractor_paid='$_POST[contractor_paid]',
+									ps_pay.contractor_check='$_POST[contractor_check]', 
+									ps_pay.contractor_ratea='$_POST[contractor_ratea]', 
+									ps_pay.contractor_paida='$_POST[contractor_paida]',
+									ps_pay.contractor_checka='$_POST[contractor_checka]', 
+									ps_pay.contractor_rateb='$_POST[contractor_rateb]', 
+									ps_pay.contractor_paidb='$_POST[contractor_paidb]',
+									ps_pay.contractor_checkb='$_POST[contractor_checkb]', 
+									ps_pay.contractor_ratec='$_POST[contractor_ratec]', 
+									ps_pay.contractor_paidc='$_POST[contractor_paidc]',
+									ps_pay.contractor_checkc='$_POST[contractor_checkc]', 
+									ps_pay.contractor_rated='$_POST[contractor_rated]', 
+									ps_pay.contractor_paidd='$_POST[contractor_paidd]',
+									ps_pay.contractor_checkd='$_POST[contractor_checkd]', 
+									ps_pay.contractor_ratee='$_POST[contractor_ratee]', 
+									ps_pay.contractor_paide='$_POST[contractor_paide]',
+									ps_pay.contractor_checke='$_POST[contractor_checke]', 
+									ps_pay.client_rate='$_POST[client_rate]', 
+									ps_pay.client_ratea='$_POST[client_ratea]', 
+									ps_pay.client_rateb='$_POST[client_rateb]', 
+									ps_pay.client_paid='$_POST[client_paid]',
+									ps_pay.client_paida='$_POST[client_paida]',
+									ps_pay.client_paidb='$_POST[client_paidb]',
+									ps_pay.client_check='$_POST[client_check]',
+									ps_pay.client_checka='$_POST[client_checka]',
+									ps_pay.client_checkb='$_POST[client_checkb]',
+									ps_pay.client_ratec='$_POST[client_ratec]', 
+									ps_pay.client_rated='$_POST[client_rated]', 
+									ps_pay.client_ratee='$_POST[client_ratee]', 
+									ps_pay.client_paidc='$_POST[client_paidc]',
+									ps_pay.client_paidd='$_POST[client_paidd]',
+									ps_pay.client_paide='$_POST[client_paide]',
+									ps_pay.client_checkc='$_POST[client_checkc]',
+									ps_pay.client_checkd='$_POST[client_checkd]',
+									ps_pay.client_checke='$_POST[client_checke]',
+									ps_packets.accountingNotes='".addslashes($_POST[accountingNotes])."'
+										WHERE packet_id='$_POST[id]' AND ps_packets.packet_id=ps_pay.packetID AND ps_pay.product='OTD'";		
 	$r1 = @mysql_query ($q1) or die(mysql_error());
 	
 //addNote($_POST[id],$_COOKIE[userdata][name].': Entered Payment on '.date('m/d/Y'));
@@ -113,7 +112,7 @@ if ($_POST[submit]){
 	echo "<script>automation();</script>";
 }
 
-$q1 = "SELECT * FROM ps_packets WHERE packet_id = $_GET[id]";		
+$q1 = "SELECT * FROM ps_packets, ps_pay WHERE packet_id = $_GET[id] AND ps_packets.packet_id=ps_pay.packetID AND ps_pay.product='OTD'";		
 $r1 = @mysql_query ($q1) or die(mysql_error());
 $data = mysql_fetch_array($r1, MYSQL_ASSOC);
 
@@ -278,12 +277,6 @@ td { font-variant:small-caps }
     	<td style="border-top:solid 1px;"><input tabindex="5" name="client_paid" size="7" maxlength="7" value="<?=$data[client_paid]?>" /></td>
     	<td style="border-top:solid 1px;"><input name="client_paida" size="7" maxlength="7" value="<?=$data[client_paida]?>" /></td>
     	<td style="border-top:solid 1px;"><input name="client_paidb" size="7" maxlength="7" value="<?=$data[client_paidb]?>" /></td>
-	</tr>
-        <tr>
-    	<td style="border-top:solid 1px;">Service Reduction</td>
-    	<td style="border-top:solid 1px;"><input tabindex="6" name="serviceReduction" size="7" maxlength="7" value="<?=$data[serviceReduction]?>" /></td>
-    	<td style="border-top:solid 1px;"> </td>
-    	<td style="border-top:solid 1px;"> </td>
 	</tr>
 
 </table>

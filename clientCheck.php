@@ -30,7 +30,7 @@ $i2='1';
 $where='';
 $rec = count($_GET['id']);
 while ($i < $rec ){?>
-<? $where .= "client_check = '".$_GET['id']["$i"]."' or "; ?>
+<? $where .= "ps_pay.client_check = '".$_GET['id']["$i"]."' or "; ?>
 Check <?=$i2;?>: <?=$_GET['id']["$i"];?><br />
 <? $i++; $i2++; }
 $cut =  strlen($where);
@@ -49,7 +49,7 @@ $cut =  strlen($where);
         <td>440 - Skip Trace</td>
     </tr>
 	<?
-	$r=@mysql_query("select * from ps_packets where client_check <> '' AND (".substr($where,0,$cut-3).") ")or die(mysql_error());
+	$r=@mysql_query("select * from ps_packets, ps_pay where ps_pay.client_check <> '' AND (".substr($where,0,$cut-3).") AND ps_packets.packet_id=ps_pay.packetID AND ps_pay.product='OTD')or die(mysql_error());
     while ($d=mysql_fetch_array($r, MYSQL_ASSOC)){
     ?>
 	<tr bgcolor="#CCFF66">
@@ -71,7 +71,7 @@ $_SESSION['total']=$_SESSION['total']+$d['client_paid'];
 ?>
 	<? }?>
     <?
-    $r=@mysql_query("select * from ps_packets where client_checka <> '' AND (".substr($where,0,$cut-3).") ");
+    $r=@mysql_query("select * from ps_packets, ps_pay where ps_pay.client_checka <> '' AND (".substr($where,0,$cut-3).") AND ps_packets.packet_id=ps_pay.packetID AND ps_pay.product='OTD'");
     while ($d=mysql_fetch_array($r, MYSQL_ASSOC)){
     ?>
 	<tr bgcolor="#66FFCC">
@@ -93,7 +93,7 @@ $_SESSION['total']=$_SESSION['total']+$d['client_paida'];
 ?>
 	<? }?>
     <?
-    $r=@mysql_query("select * from ps_packets where client_checkb <> '' AND (".substr($where,0,$cut-3).") ");
+    $r=@mysql_query("select * from ps_packets, ps_pay where ps_pay.client_checkb <> '' AND (".substr($where,0,$cut-3).") AND ps_packets.packet_id=ps_pay.packetID AND ps_pay.product='OTD'");
     while ($d=mysql_fetch_array($r, MYSQL_ASSOC)){
     ?>
 	<tr bgcolor="#FFFFCC">
@@ -118,7 +118,7 @@ $_SESSION['total']=$_SESSION['total']+$d['client_paidb'];
 	
 	
 	<?
-	$r=@mysql_query("select * from evictionPackets where client_check <> '' AND (".substr($where,0,$cut-3).") ")or die(mysql_error());
+	$r=@mysql_query("select * from evictionPackets, ps_pay where ps_pay.client_check <> '' AND (".substr($where,0,$cut-3).") AND evictionPackets.eviction_id=ps_pay.packetID AND ps_pay.product='EV'")or die(mysql_error());
     while ($d=mysql_fetch_array($r, MYSQL_ASSOC)){
     ?>
 	<tr bgcolor="#CCFF66">
@@ -140,7 +140,7 @@ $_SESSION['total']=$_SESSION['total']+$d['client_paid'];
 ?>
 	<? }?>
     <?
-    $r=@mysql_query("select * from evictionPackets where client_checka <> '' AND (".substr($where,0,$cut-3).") ");
+    $r=@mysql_query("select * from evictionPackets, ps_pay where ps_pay.client_checka <> '' AND (".substr($where,0,$cut-3).") AND evictionPackets.eviction_id=ps_pay.packetID AND ps_pay.product='EV' ");
     while ($d=mysql_fetch_array($r, MYSQL_ASSOC)){
     ?>
 	<tr bgcolor="#66FFCC">
@@ -162,7 +162,7 @@ $_SESSION['total']=$_SESSION['total']+$d['client_paida'];
 ?>
 	<? }?>
     <?
-    $r=@mysql_query("select * from evictionPackets where client_checkb <> '' AND (".substr($where,0,$cut-3).") ");
+    $r=@mysql_query("select * from evictionPackets, ps_pay where ps_pay.client_checkb <> '' AND (".substr($where,0,$cut-3).") AND evictionPackets.eviction_id=ps_pay.packetID AND ps_pay.product='EV' ");
     while ($d=mysql_fetch_array($r, MYSQL_ASSOC)){
     ?>
 	<tr bgcolor="#FFFFCC">

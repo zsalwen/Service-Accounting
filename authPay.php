@@ -6,7 +6,7 @@ dbAlphaConnect();
 if ($_POST[auth]){
 
 
-$r=@mysql_query("select * from ps_packets where packet_id='$_POST[auth]'");
+$r=@mysql_query("select * from ps_packets, ps_pay where packet_id='$_POST[auth]' AND ps_packets.packet_id=ps_pay.packetID AND ps_pay.product='OTD'");
 $d=mysql_fetch_array($r,MYSQL_ASSOC);
 if ($d[payAuth] == 0){
 echo "Payment authorized for packet $_POST[auth].<br><style>body{background-color:#00FF00;}</style>";

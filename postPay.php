@@ -13,7 +13,7 @@ if (!$_POST[Submit2]){
 		$contractor_check='contractor_check'.$slot;
 	
 	mysql_select_db("core");
-	@mysql_query("UPDATE ps_packets SET $contractor_paid='$_POST[auth]', $contractor_check='$_POST[check_no]' where packet_id='$_POST[packet]'");
+	@mysql_query("UPDATE ps_pay SET $contractor_paid='$_POST[auth]', $contractor_check='$_POST[check_no]' where packetID='$_POST[packet]' AND product='OTD'");
 	
 	
 	header('Location: postPay.php');
@@ -41,7 +41,7 @@ if (!$_POST[packet] && !$_POST[newPacket]){?>
 		$packet=$_POST[packet];
 	}
 mysql_select_db("core");
-$q="SELECT * from ps_packets where packet_id='$packet'";
+$q="SELECT * from ps_packets, ps_pay where packet_id='$packet' AND ps_packets.packet_id=ps_pay.packetID AND ps_pay.product='OTD'";
 $r=@mysql_query($q) or die("Query: $q<br>".mysql_error());
 $d=mysql_fetch_array($r, MYSQL_ASSOC);
 if ($d[payAuth] == 1){

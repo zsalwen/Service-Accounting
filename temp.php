@@ -33,7 +33,7 @@ $_SESSION['total']='';
         <td>440 - Skip Trace</td>
     </tr>
 	<?
-    $r=@mysql_query("select * from ps_packets");
+    $r=@mysql_query("select * from ps_packets, ps_pay WHERE ps_packets.packet_id=ps_pay.packetID AND ps_pay.product='OTD'");
     while ($d=mysql_fetch_array($r, MYSQL_ASSOC)){
 	if ($d['code410'] || $d['code420'] || $d['code430'] || $d['code440']){
     ?>
@@ -56,7 +56,7 @@ $_SESSION['total']=$_SESSION['total']+$d['client_paid'];
 ?>
 	<? }?>
     <?
-    $r=@mysql_query("select * from ps_packets");
+    $r=@mysql_query("select * from ps_packets, ps_pay WHERE ps_packets.packet_id=ps_pay.packetID AND ps_pay.product='OTD'");
     while ($d=mysql_fetch_array($r, MYSQL_ASSOC)){
 	if ($d['code410a'] || $d['code420a'] || $d['code430a'] || $d['code440a']){
     ?>
@@ -79,7 +79,7 @@ $_SESSION['total']=$_SESSION['total']+$d['client_paida'];
 ?>
 	<? }?>
     <?
-    $r=@mysql_query("select * from ps_packets");
+    $r=@mysql_query("select * from ps_packets, ps_pay WHERE ps_packets.packet_id=ps_pay.packetID AND ps_pay.product='OTD'");
     while ($d=mysql_fetch_array($r, MYSQL_ASSOC)){
 	if ($d['code410b'] || $d['code420b'] || $d['code430b'] || $d['code440b']){
     ?>
