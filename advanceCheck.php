@@ -188,7 +188,6 @@ $svc=0;
 $ptr=0;
 while ($d=mysql_fetch_array($r, MYSQL_ASSOC)){
 $svc = $svc + packetCost($d[packet_id]);
-//$ptr = $ptr + $d[print_cost];
 
 
 $details .= "<tr><td>$d[packet_id]</td><td>$d[date_received]</td><td>$".number_format(packetCost($d[packet_id]),2)."</td>

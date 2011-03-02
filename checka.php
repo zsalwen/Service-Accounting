@@ -181,19 +181,16 @@ $r=@mysql_query($q);
 
 
 
-$details = "<table width='100%' cellspacing='0'><tr><td>ID</td><td>Service</td><td>Printing</td><td style='padding-left:20px'>Balance</td></tr>";
+$details = "<table width='100%' cellspacing='0'><tr><td>ID</td><td>Service</td><td style='padding-left:20px'>Balance</td></tr>";
 $svc=0;
-$ptr=0;
 while ($d=mysql_fetch_array($r, MYSQL_ASSOC)){
 $svc = $svc + packetCost($d[packet_id]);
-$ptr = $ptr + $d[print_cost];
 
 
 $details .= "<tr><td>$d[packet_id]</td><td>$".number_format(packetCost($d[packet_id]),2)."</td>
-<td>-$".number_format($d[print_cost],2)."</td>
-<td style='border-left:solid 1px; padding-left:20px'>$".number_format(packetCost($d[packet_id]) - $d[print_cost],2)."</td></tr>";
+<td style='border-left:solid 1px; padding-left:20px'>$".number_format(packetCost($d[packet_id]),2)."</td></tr>";
 }
-$details .= "<tr><td style='border-top:solid;'>Total</td><td style='border-top:solid;'>$".number_format($svc,2)."</td><td style='border-top:solid;'>-$".number_format($ptr,2)."</td><td style='border-top:solid; padding-left:20px'>$".number_format(($svc-$ptr),2)."</td></tr></table>";
+$details .= "<tr><td style='border-top:solid;'>Total</td><td style='border-top:solid;'>$".number_format($svc,2)."</td><td style='border-top:solid; padding-left:20px'>$".number_format($svc,2)."</td></tr></table>";
 
 
 $payAmount = number_format(($svc-$ptr),2);

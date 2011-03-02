@@ -152,9 +152,9 @@ $q="SELECT * FROM ps_packets, ps_pay WHERE ps_pay.contractor_rateb <> '' AND pro
 $r=@mysql_query($q);
 while ($d=mysql_fetch_array($r, MYSQL_ASSOC)){
 	$svc =packetCost($d[packet_id]); 
-	$pay = $svc - $d[print_cost];
+	$pay = $svc;
 	@mysql_query("update ps_pay set contractor_paidb = '$pay', contractor_checkb = '$_POST[check]' where packetID = '$d[packet_id]' AND product='OTD'") or die(mysql_error());
-	$result .= "Paying packet $d[packet_id] with check number <strong>$_POST[check]</strong>. Rate is $d[contractor_rate]. Service is $svc. Printing is $d[print_cost]. Amount Paid is <strong>$pay</strong>, status is now '<strong>AWAITING PAYMENT</strong>' from client.<br>";
+	$result .= "Paying packet $d[packet_id] with check number <strong>$_POST[check]</strong>. Rate is $d[contractor_rate]. Service is $svc. Amount Paid is <strong>$pay</strong>, status is now '<strong>AWAITING PAYMENT</strong>' from client.<br>";
 }
 @mysql_query("insert into ac_register (trans, accountID, codeID, userID, status, detail, amount, entered, checkNumber) values ('WITHDRAW', '5', '301', '$user', 'ENTERED', '$_POST[regpayto]', '$pay', NOW(), '$_POST[check]')") or die(mysql_error());
 
@@ -180,22 +180,19 @@ $r=@mysql_query($q);
 
 
 
-$details = "<table width='100%' cellspacing='0'><tr><td>ID</td><td>Service</td><td>Printing</td><td style='padding-left:20px'>Balance</td></tr>";
+$details = "<table width='100%' cellspacing='0'><tr><td>ID</td><td>Service</td><td style='padding-left:20px'>Balance</td></tr>";
 $svc=0;
-$ptr=0;
 while ($d=mysql_fetch_array($r, MYSQL_ASSOC)){
 $svc = $svc + packetCost($d[packet_id]);
-$ptr = $ptr + $d[print_cost];
 
 
 $details .= "<tr><td>$d[packet_id]</td><td>$".number_format(packetCost($d[packet_id]),2)."</td>
-<td>-$".number_format($d[print_cost],2)."</td>
-<td style='border-left:solid 1px; padding-left:20px'>$".number_format(packetCost($d[packet_id]) - $d[print_cost],2)."</td></tr>";
+<td style='border-left:solid 1px; padding-left:20px'>$".number_format(packetCost($d[packet_id]),2)."</td></tr>";
 }
-$details .= "<tr><td style='border-top:solid;'>Total</td><td style='border-top:solid;'>$".number_format($svc,2)."</td><td style='border-top:solid;'>-$".number_format($ptr,2)."</td><td style='border-top:solid; padding-left:20px'>$".number_format(($svc-$ptr),2)."</td></tr></table>";
+$details .= "<tr><td style='border-top:solid;'>Total</td><td style='border-top:solid;'>$".number_format($svc,2)."</td><td style='border-top:solid; padding-left:20px'>$".number_format(($svc),2)."</td></tr></table>";
 
 
-$payAmount = number_format(($svc-$ptr),2);
+$payAmount = number_format(($svc),2);
 
 
 

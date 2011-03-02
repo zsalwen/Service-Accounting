@@ -177,10 +177,10 @@ $q="SELECT * FROM ps_packets WHERE process_status = 'INVOICED' AND server_id = '
 $r=@mysql_query($q);
 while ($d=mysql_fetch_array($r, MYSQL_ASSOC)){
 	$svc =packetCost($d[packet_id]); 
-	$pay = $svc - $d[print_cost]; 
+	$pay = $svc; 
 	$reg = $reg + $pay; 
 	@mysql_query("update ps_pay set contractor_paid = '$pay', process_status = 'AWAITING PAYMENT', contractor_check = '$_POST[check]' where packetID = '$d[packet_id]' AND product='OTD'") or die(mysql_error());
-	$result .= "Paying packet $d[packet_id] with check number <strong>$_POST[check]</strong>. Rate is $d[contractor_rate]. Service is $svc. Printing is $d[print_cost]. Amount Paid is <strong>$pay</strong>, status is now '<strong>AWAITING PAYMENT</strong>' from client.<br>";
+	$result .= "Paying packet $d[packet_id] with check number <strong>$_POST[check]</strong>. Rate is $d[contractor_rate]. Service is $svc. Amount Paid is <strong>$pay</strong>, status is now '<strong>AWAITING PAYMENT</strong>' from client.<br>";
 }
 @mysql_query("insert into ac_register (trans, accountID, codeID, userID, status, detail, amount, entered, checkNumber) values ('WITHDRAW', '5', '561', '$user', 'ENTERED', '$_POST[regpayto]', '$reg', NOW(), '$_POST[check]')") or die(mysql_error());
 
@@ -206,29 +206,19 @@ $r=@mysql_query($q);
 
 
 
-$details = "<table width='100%' cellspacing='0'><tr><td>ID</td><td>Received</td><td>Service</td><td>Printing</td><td style='padding-left:20px'>Balance</td></tr>";
+$details = "<table width='100%' cellspacing='0'><tr><td>ID</td><td>Received</td><td>Service</td><td style='padding-left:20px'>Balance</td></tr>";
 $svc=0;
-$ptr=0;
 while ($d=mysql_fetch_array($r, MYSQL_ASSOC)){
 $svc = $svc + packetCost($d[packet_id]);
-if ($d[contractor_rate] == ''){
-}else{
-	$ptr = $ptr + $d[print_cost];
-}
 
 $details .= "<tr><td>$d[packet_id]</td><td>$d[date_received]</td><td>$".number_format(packetCost($d[packet_id]),2)."</td>";
 if ($d[contractor_rate] == ''){
-	$details .= "<td>-$".number_format('0',2)."</td>";
-}else{
-	$details .= "<td>-$".number_format($d[print_cost],2)."</td>";
-}
-if ($d[contractor_rate] == ''){
 	$details .= "<td style='border-left:solid 1px; padding-left:20px'>$".number_format(packetCost($d[packet_id]),2)."</td></tr>";
 }else{
-	$details .= "<td style='border-left:solid 1px; padding-left:20px'>$".number_format(packetCost($d[packet_id]) - $d[print_cost],2)."</td></tr>";
+	$details .= "<td style='border-left:solid 1px; padding-left:20px'>$".number_format(packetCost($d[packet_id]),2)."</td></tr>";
 }
 }
-$details .= "<tr><td style='border-top:solid;'>Total</td><td style='border-top:solid;'> </td><td style='border-top:solid;'>$".number_format($svc,2)."</td><td style='border-top:solid;'>-$".number_format($ptr,2)."</td><td style='border-top:solid; padding-left:20px'>$".number_format(($svc-$ptr),2)."</td></tr></table>";
+$details .= "<tr><td style='border-top:solid;'>Total</td><td style='border-top:solid;'> </td><td style='border-top:solid;'>$".number_format($svc,2)."</td><td style='border-top:solid; padding-left:20px'>$".number_format(($svc),2)."</td></tr></table>";
 
 
 $payAmount = number_format(($svc-$ptr),2);
